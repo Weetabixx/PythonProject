@@ -1,7 +1,8 @@
 import plotly
 from plotly.graph_objs import Scatter, Layout
 
-class Stonepounds:  # a stone and pounds datatype
+
+class Stonepounds:  # a stone and pounds data type
     def __init__(self, stone, pounds):
         self.stone = stone
         self.pound = pounds
@@ -57,15 +58,73 @@ def writeEntry(filename, entry):
     print(entrystring)
 
 
+def addd():
+    print("for whom is this entry:")
+    name = input()
+    print("what day was this measurement taken? dd/mm/yyyy")
+    date = input()
+    gotmeasurement = False
+    while gotmeasurement == False:
+        print("is the measurement in kilo(kg) or stone(st)? write kg or st")
+        type = input()
+        if type == "st":
+            print("how many stone?")
+            stone = int(input())
+            print("how many pounds?")
+            pounds = float(input())
+            w = Stonepounds(stone, pounds)
+            kilo = w.convert()
+            gotmeasurement = True
+        elif type == "kg":
+            print("how many kg?")
+            kilo = float(input())
+            gotmeasurement = True
+        else:
+            print("sorry i don't understand that measurement type")
+    measurement = Entry(date, name, kilo)
+    print("adding: ")
+    measurement.display()
+    return measurement
+
+
+def graph(data):
+    pass
+
+
 def menu():
-    data = readEntries("weight.txt")
+    print("reading existing entries...")
+    try:
+        data = readEntries("t.txt")  # change this to whatever file has the entries
+        for e in data:
+            e.display()
+    except IOError:
+        print("could'nt find any entries")
+        data = []
+    command = ""
+    while command != "exit":
+        print("what would you like to do?")
+        print("add - adds a entry")
+        print("graph - creates a graph of the current entries")
+        print("exit - exits application")
+        command = input()
+        if command == "add":
+            newEntry = addd()
+            data.append(newEntry)
+            writeEntry("t.txt", newEntry)
+        elif command == "graph":
+            graph(data)
+        elif command != "exit":
+            print("sorry, i couldn't understand you.")
+
 
 if __name__ == '__main__':
-    plotly.offline.plot({
-        "data": [Scatter(x=[1, 2, 3, 4], y=[4, 3, 2, 1])],
-        "layout": Layout(title="hello world")
-    })
+    menu()
 
+    # code to test plotly library
+    # plotly.offline.plot({
+    #     "data": [Scatter(x=[1, 2, 3, 4], y=[4, 3, 2, 1])],
+    #     "layout": Layout(title="hello world")
+    # })
 
     # code to test writing and reading entries to file
     # e = Entry("02/06/2017", "robin", 77.5)
@@ -74,7 +133,7 @@ if __name__ == '__main__':
     # for x in p:
     #     x.display()
 
-    # code to test converstion methods
+    # code to test conversion methods
     # print "81kg in st is:"
     # print kiloToStone(81)
     # print "and 13st0 in kg is:"
