@@ -1,5 +1,7 @@
+import plotly
+from plotly.graph_objs import Scatter, Layout
 
-class Stonepounds: # a stone and pounds datatype
+class Stonepounds:  # a stone and pounds datatype
     def __init__(self, stone, pounds):
         self.stone = stone
         self.pound = pounds
@@ -17,9 +19,9 @@ class Entry:
         self.kilo = kilo
 
     def display(self):
-        stonepound = kiloToStone(self.kilo)
-        s = self.date + " - " + self.name + " - " + str(self.kilo) + "kg - " + str(stonepound[0]) + "st" + str(stonepound[1])
-        print s
+        stlb = kiloToStone(self.kilo)
+        s = self.date + " - " + self.name + " - " + str(self.kilo) + "kg - " + str(stlb[0]) + "st" + str(stlb[1])
+        print(s)
 
 
 def kiloToStone(kilo):
@@ -38,24 +40,31 @@ def readEntries(filename):
         name = splitline[1]
         kilokg = splitline[2]
         kilo = float(kilokg[:-2])
-        e = Entry(date,name,kilo)
+        e = Entry(date, name, kilo)
         entryList.append(e)
     return entryList
 
 def writeEntry(filename, entry):
-    file = open(filename, "a+")
+    f = open(filename, "a+")
     date = entry.date
     name = entry.name
     kilo = entry.kilo
-    stonepound = kiloToStone(kilo)
-    entrystring = date + " - " + name + " - " + str(kilo) + "kg - " + str(stonepound[0]) + "st" + str(stonepound[1]) + "\n"
-    file.write(entrystring)
-    file.close()
-    print "added entry to file"
-    print entrystring
+    stlb = kiloToStone(kilo)
+    entrystring = date + " - " + name + " - " + str(kilo) + "kg - " + str(stlb[0]) + "st" + str(stlb[1]) + "\n"
+    f.write(entrystring)
+    f.close()
+    print("added entry to file")
+    print(entrystring)
+
+
+def menu():
+    data = readEntries("weight.txt")
 
 if __name__ == '__main__':
-    pass
+    plotly.offline.plot({
+        "data": [Scatter(x=[1, 2, 3, 4], y=[4, 3, 2, 1])],
+        "layout": Layout(title="hello world")
+    })
 
 
     # code to test writing and reading entries to file
@@ -63,7 +72,7 @@ if __name__ == '__main__':
     # writeEntry("t.txt", e)
     # p = readEntries("t.txt")
     # for x in p:
-        # x.display()
+    #     x.display()
 
     # code to test converstion methods
     # print "81kg in st is:"
