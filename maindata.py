@@ -140,15 +140,28 @@ def graph(rawdata):
         peopleweight[x.name] = []
         peopledate[x.name] = []
     for x in rawdata:
-        peopleweight[x.name].append(x.kilo)
+        if stone:
+            peopleweight[x.name].append(x.kilo * 0.157473)
+        else:
+            peopleweight[x.name].append(round(x.kilo, 2))
         peopledate[x.name].append(x.day)
+
     lines = []
     for person in peopleweight:
+        textt = []
+        if stone:
+            textt = []
+            for w in peopleweight[person]:
+                p = str(round((14 * (w % 1)), 1))
+                s = str(int(w))
+                t = s + "st" + p
+                textt.append(t)
         linex = go.Scatter(
             x=peopledate[person],
             y=peopleweight[person],
             mode='lines+markers',
-            name=person
+            name=person,
+            text=textt
         )
         lines.append(linex)
     layout = go.Layout(
