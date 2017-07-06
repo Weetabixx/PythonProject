@@ -2,10 +2,20 @@ import plotly as py
 import plotly.graph_objs as go
 
 
-class Stonepounds:  # a stone and pounds data type
+class Stonepounds(float):  # a stone and pounds data type
+    def __new__(cls, stone, pounds):
+        value = 6.35029 * stone
+        value += 0.453592 * pounds
+        return super().__new__(cls, value)
+
     def __init__(self, stone, pounds):
         self.stone = stone
         self.pound = pounds
+        float.__init__(self.convert())
+
+    def __str__(self):
+        value = str(self.stone) + "st" + str(self.pound)
+        return value
 
     def convert(self):
         kilo = 6.35029 * self.stone
@@ -18,6 +28,8 @@ class Entry:
         self.date = date
         self.name = name
         self.kilo = kilo
+        stp = kiloToStone(kilo)
+        self.st = Stonepounds(stp[0], stp[1])
         dateparts = date.split("/")  # this part converts the date to a number
         datenumbers = []
         for x in dateparts:
@@ -61,7 +73,7 @@ class Entry:
 
     def display(self):
         stlb = kiloToStone(self.kilo)
-        s = self.date + " - " + self.name + " - " + str(self.kilo) + "kg - " + str(stlb[0]) + "st" + str(stlb[1])
+        s = self.date + " - " + self.name + " - " + str(self.kilo) + "kg - " + str(self.st)
         print(s)
 
 
@@ -141,7 +153,7 @@ def graph(rawdata):
         peopledate[x.name] = []
     for x in rawdata:
         if stone:
-            peopleweight[x.name].append(x.kilo * 0.157473)
+            peopleweight[x.name].append(x.st)
         else:
             peopleweight[x.name].append(round(x.kilo, 2))
         peopledate[x.name].append(x.day)
@@ -149,13 +161,13 @@ def graph(rawdata):
     lines = []
     for person in peopleweight:
         textt = []
-        if stone:
-            textt = []
-            for w in peopleweight[person]:
-                p = str(round((14 * (w % 1)), 1))
-                s = str(int(w))
-                t = s + "st" + p
-                textt.append(t)
+        #if stone:
+        #    textt = []
+        #    for w in peopleweight[person]:
+        #        p = str(round((14 * (w % 1)), 1))
+        #        s = str(int(w))
+        #        t = s + "st" + p
+        #        textt.append(t)
         linex = go.Scatter(
             x=peopledate[person],
             y=peopleweight[person],
