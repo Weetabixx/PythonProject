@@ -34,6 +34,10 @@ class Entry:
         datenumbers = []
         for x in dateparts:
             datenumbers.append(int(x))
+        self.dately = ""  # date to be used by plotly
+        self.dately += str(datenumbers[2]) + "-"
+        self.dately += str(datenumbers[1]) + "-"
+        self.dately += str(datenumbers[0])
         self.day = datenumbers[0]  # add days
         self.day += datenumbers[2]*365  # add years
         self.day += int(datenumbers[2] / 4)  # add leap days
@@ -156,7 +160,7 @@ def graph(rawdata):
             peopleweight[x.name].append(x.st)
         else:
             peopleweight[x.name].append(round(x.kilo, 2))
-        peopledate[x.name].append(x.day)
+        peopledate[x.name].append(x.dately)
 
     lines = []
     for person in peopleweight:
